@@ -1,18 +1,26 @@
 import React, { useState } from 'react';
+import { auth } from '../../config/Config';
 import Jumbotron from 'react-bootstrap/Jumbotron';
 import Container from 'react-bootstrap/Container';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import { Link } from 'react-router-dom';
 
-const SignIn = () => {
+const SignIn = (props) => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [loginError, setLoginError] = useState('');
     const handleLogin = (e) => {
         e.preventDefault();
-        console.log("email: ", email);
-        console.log("password: ", password);
+        // console.log("email: ", email);
+        // console.log("password: ", password);
+        auth.signInWithEmailAndPassword(email, password)
+            .then(()=>{
+                setEmail('');
+                setPassword('');
+                setLoginError('');
+                props.history.push('/');
+            }).catch(err=>setLoginError(err.message));
     }
 
     return (

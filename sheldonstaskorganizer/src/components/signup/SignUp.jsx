@@ -4,17 +4,35 @@ import Container from 'react-bootstrap/Container';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import { Link } from 'react-router-dom';
+import { auth, db } from '../../config/Config';
 
-const SignUp = () => {
+const SignUp = (props) => {
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [registrationError, setRegistrationError] = useState('');
     const handleRegister=(e)=>{
         e.preventDefault();
-        console.log("name: ", name);
-        console.log("email: ", email);
-        console.log("password: ", password);
+        // console.log("name: ", name);
+        // console.log("email: ", email);
+        // console.log("password: ", password);
+        auth.createUserWithEmailAndPassword(email, password)
+            .then(cred=> db.collection('users')
+                           .doc(cred.user.uid)
+                           .set({
+                               Name: name,
+                               Email: email,
+                               Password: password
+                           })
+                           .then(()=>{
+                               setName('');
+                               setEmail('');
+                               setPassword('');
+                               setRegistrationError('');
+                               props.history.push('/login');
+                           })
+                           .catch(err=> setRegistrationError(err.message))
+            ).catch(err=>setRegistrationError(err.message));
     }
     return (
         <Jumbotron fluid>

@@ -1,10 +1,10 @@
 import React from 'react';
 import Header  from '../header/Header';
 
-const Home = () => {
+const Home = ({currentUser}) => {
   return (
     <div>
-     <Header/>
+     <Header currentUser={currentUser}/>
     </div>
   )
 }
