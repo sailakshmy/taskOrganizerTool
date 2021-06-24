@@ -3,7 +3,7 @@ import Jumbotron from 'react-bootstrap/Jumbotron';
 import Container from 'react-bootstrap/Container';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import { auth, db } from '../../config/Config';
 
 const SignUp = (props) => {
@@ -11,6 +11,7 @@ const SignUp = (props) => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [registrationError, setRegistrationError] = useState('');
+    const history = useHistory();
     const handleRegister=(e)=>{
         e.preventDefault();
         // console.log("name: ", name);
@@ -29,7 +30,7 @@ const SignUp = (props) => {
                                setEmail('');
                                setPassword('');
                                setRegistrationError('');
-                               props.history.push('/login');
+                               history.push('/login');
                            })
                            .catch(err=> setRegistrationError(err.message))
             ).catch(err=>setRegistrationError(err.message));

@@ -30,7 +30,9 @@ function App() {
   return (
     <BrowserRouter>
       <Switch>
-        <Route exact path='/' component={()=><Home currentUser={currentUser}/>}/>
+        <Route exact path='/'>
+        <Home currentUser={currentUser}/>
+        </Route>
         <Route path='/signup' component={SignUp}/>
         <Route path='/login' component={SignIn}/>
         <Route component={InvalidURL}/>
