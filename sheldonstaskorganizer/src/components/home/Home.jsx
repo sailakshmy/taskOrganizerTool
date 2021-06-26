@@ -16,7 +16,7 @@ const Home = ({ currentUser, tasks }) => {
   const [addTask,setTask] = useState('');
   const [addTaskError, setAddTaskError]= useState('');
   // const [totalTasks, setTotalTasks]= useState(0);
-  console.log(tasks);
+  // console.log(tasks);
   const handleAddTask=(e)=>{
     e.preventDefault();
    // console.log(addTask);

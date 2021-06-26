@@ -45,6 +45,13 @@ export class App extends Component {
                 TaskCompleted: change.doc.data().TaskCompleted,
               })
             }
+            if(change.type==='removed'){
+              for(let i=0; i<taskList.length;i++){
+                if(change.doc.id===taskList[i].id){
+                  taskList.splice(i,1);
+                }
+              }
+            }
             this.setState({
               tasks: taskList
             })
