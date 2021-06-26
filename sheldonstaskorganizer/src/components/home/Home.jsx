@@ -7,21 +7,23 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import {Link} from 'react-router-dom';
 import { auth,db } from '../../config/Config';
+import TaskList from '../tasklist/TaskList';
 
 import './Home.css';
 
 
-const Home = ({ currentUser }) => {
+const Home = ({ currentUser, tasks }) => {
   const [addTask,setTask] = useState('');
   const [addTaskError, setAddTaskError]= useState('');
-  const [totalTasks, setTotalTasks]= useState(0);
+  // const [totalTasks, setTotalTasks]= useState(0);
+  console.log(tasks);
   const handleAddTask=(e)=>{
     e.preventDefault();
    // console.log(addTask);
     auth.onAuthStateChanged(user=>{
      // console.log(user.uid);
       if(user){
-        const taskNumber = totalTasks+1;
+        const taskNumber = tasks.length+1;
         db.collection('tasks for user '+ user.uid)
           .add({
             TaskNumber: taskNumber,
@@ -29,7 +31,7 @@ const Home = ({ currentUser }) => {
             TaskCompleted: false,
           })
           .then(()=>{
-            setTotalTasks(taskNumber);
+            // setTotalTasks(taskNumber);
             setTask('');
           })
           .catch(err=>setAddTaskError(err.message));
@@ -49,7 +51,7 @@ const Home = ({ currentUser }) => {
           value={addTask} onChange={(e)=>setTask(e.target.value)}/>
         </Col>
         <Col>
-        <Button type="submit" disabled={!currentUser}> Add task </Button>
+        <Button type="submit" disabled={!currentUser || addTask===''}> Add task </Button>
         </Col>
         {!currentUser && 
       <h6>
@@ -58,8 +60,7 @@ const Home = ({ currentUser }) => {
       {addTaskError && currentUser && <p className="red-text">{`Oops! We have run into this error-${addTaskError}- while adding your task`}</p>}
       </Form>
       </Row>
-
-     
+      <TaskList taskList={tasks}/>
     </Container>
   )
 }
