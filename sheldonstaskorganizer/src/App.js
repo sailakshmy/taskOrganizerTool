@@ -12,6 +12,7 @@ export class App extends Component {
   state={
     currentUser: null,
     tasks:[],
+    completedTasks:[],
   }
 
   componentDidMount(){
@@ -33,9 +34,11 @@ export class App extends Component {
     auth.onAuthStateChanged(user=>{
       if(user){
         const taskList = this.state.tasks;
+        const completedTaskList = this.state.completedTasks;
         db.collection('tasks for user '+ user.uid)
           .onSnapshot(snapshot=>{
           let changes = snapshot.docChanges();
+          console.log(changes);
           changes.forEach(change=>{
             if(change.type==='added'){
               taskList.push({
@@ -52,8 +55,30 @@ export class App extends Component {
                 }
               }
             }
+            if(change.type==='modified'){
+              console.log(change.type);
+              for(let i=0; i<taskList.length;i++){
+                console.log(change.doc.data().TaskCompleted);
+                if(change.doc.id===taskList[i].id && change.doc.data().TaskCompleted===true){
+                  completedTaskList.push(change.doc.data());
+                  taskList.splice(i,1);
+                }
+              }
+            }
+            if(change.doc.data().TaskCompleted===true){
+              for(let i=0; i<taskList.length;i++){
+                console.log(change.doc.data().TaskCompleted);
+                if(change.doc.id===taskList[i].id 
+                  && change.doc.data().TaskCompleted===true 
+                  && change.doc.id){
+                  completedTaskList.push(change.doc.data());
+                  taskList.splice(i,1);
+                }
+              }
+            }
             this.setState({
-              tasks: taskList
+              tasks: taskList,
+              completedTasks: completedTaskList,
             })
           })
         })
@@ -67,6 +92,7 @@ export class App extends Component {
 
 
   render() {
+    console.log(this.state.completedTasks)
     // console.log(this.state.tasks);
     return (
       <Router>
@@ -74,7 +100,8 @@ export class App extends Component {
           <Route exact path='/'>
           <Home
             currentUser={this.state.currentUser}
-            tasks={this.state.tasks}/>
+            tasks={this.state.tasks}
+            completedTasks={this.state.completedTasks}/>
           </Route>
           <Route path="/signup" component={SignUp}/>
           <Route path="/login" component={SignIn}/>

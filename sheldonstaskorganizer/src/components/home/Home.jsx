@@ -12,7 +12,7 @@ import TaskList from '../tasklist/TaskList';
 import './Home.css';
 
 
-const Home = ({ currentUser, tasks }) => {
+const Home = ({ currentUser, tasks, completedTasks }) => {
   const [addTask,setTask] = useState('');
   const [addTaskError, setAddTaskError]= useState('');
   // const [totalTasks, setTotalTasks]= useState(0);
@@ -60,7 +60,15 @@ const Home = ({ currentUser, tasks }) => {
       {addTaskError && currentUser && <p className="red-text">{`Oops! We have run into this error-${addTaskError}- while adding your task`}</p>}
       </Form>
       </Row>
-      <TaskList taskList={tasks}/>
+      <TaskList taskList={tasks} showCheckBox={true}/>
+      {
+        completedTasks.length >0 && 
+        <>
+      <h5 className='d-flex justify-content-center'>You have completed the following tasks:</h5>
+      <TaskList taskList={completedTasks} showCheckBox={false}/>
+        </>
+      }
+   
     </Container>
   )
 }
