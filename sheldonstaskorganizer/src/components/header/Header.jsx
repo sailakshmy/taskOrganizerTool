@@ -2,6 +2,8 @@ import React from 'react';
 import Navbar from 'react-bootstrap/Navbar';
 import Container from 'react-bootstrap/Container';
 import Button from 'react-bootstrap/Button';
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
 import { Link } from 'react-router-dom';
 import { auth } from '../../config/Config';
 import './Header.css';
@@ -26,7 +28,11 @@ const Header = (props) => {
           <br />
           {currentUser &&
             <Container>
-              <Navbar.Text> Welcome <a href="#login">{currentUser}</a></Navbar.Text>
+              <Row>
+                <Col md={12} lg={3}>
+                <Navbar.Text> Welcome <a href="#login">{currentUser}</a></Navbar.Text>
+                </Col>
+              </Row>
               <Button variant='outline-danger' onClick={handleLogout}>Logout</Button>
             </Container>
           }

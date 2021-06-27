@@ -7,14 +7,17 @@ import {Icon} from 'react-icons-kit';
 import {edit3} from 'react-icons-kit/feather/edit3';
 import {trash2} from 'react-icons-kit/feather/trash2';
 import { auth,db } from '../../config/Config';
+import { Draggable } from 'react-beautiful-dnd';
 
-const TaskItem = ({task,showCheckBox}) => {
+const TaskItem = ({task,showCheckBox,index}) => {
   const[taskItem, setTaskItem]=useState(task.Task);
   const[taskCompleted,setTaskCompleted]=useState(task.TaskCompleted);
+  // console.log("Id: ",task.id);
+  // console.log("Name:", task.Task);
 
   const handleDelete=(e)=>{
-    console.log(task.Task);
-    console.log(task.id);
+    // console.log(task.Task);
+   // console.log(task.id);
     auth.onAuthStateChanged(user=>{
       if(user){
         db.collection('tasks for user '+ user.uid)
@@ -36,9 +39,9 @@ const TaskItem = ({task,showCheckBox}) => {
    })
   }
   const handleCompleted=()=>{
-    console.log(task.TaskCompleted);
+   // console.log(task.TaskCompleted);
     const taskComplete = !task.TaskCompleted;
-    console.log(taskComplete);
+   // console.log(taskComplete);
     auth.onAuthStateChanged(user=>{
       if(user){
        db.collection('tasks for user '+ user.uid)
@@ -51,8 +54,10 @@ const TaskItem = ({task,showCheckBox}) => {
   }
 
   return (
-    <Form onSubmit={handleEdit} className="d-flex justify-content-center">
-    
+     <Draggable draggableId={task.id} index={index}>
+       {(provided)=>(
+         <div {...provided.draggableProps} {...provided.dragHandleProps} ref={provided.innerRef}>
+           <Form onSubmit={handleEdit} className="d-flex justify-content-center">
     <InputGroup>
     {showCheckBox && 
         <InputGroup.Prepend>
@@ -75,18 +80,17 @@ const TaskItem = ({task,showCheckBox}) => {
         setTaskItem(e.target.value);
       }}
     />
-     {/* <FormControl
-     value={task.TaskNumber}
-      aria-label="Recipient's username"
-      aria-describedby="basic-addon2"
-    /> */}
     <InputGroup.Append>
       <Button variant='outline-info' onClick={handleEdit} disabled={task.TaskCompleted}><Icon size={18} icon={edit3}/></Button>
       <Button variant='outline-danger' onClick={handleDelete} disabled={task.TaskCompleted}><Icon size={18} icon={trash2}/></Button>
     </InputGroup.Append>
   </InputGroup>
   </Form>
-
+         </div>
+       )}
+      
+   </Draggable>
+    
   )
 }
 

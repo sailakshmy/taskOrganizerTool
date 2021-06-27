@@ -11,6 +11,7 @@ export class App extends Component {
 
   state={
     currentUser: null,
+    currentUserId: null,
     tasks:[],
     completedTasks:[],
   }
@@ -19,9 +20,12 @@ export class App extends Component {
     // getting current user
     auth.onAuthStateChanged(user=>{
       if(user){
+  
         db.collection('users').doc(user.uid).get().then(snapshot=>{
+          //console.log(snapshot.data());
           this.setState({
-            currentUser: snapshot.data().Name
+            currentUser: snapshot.data().Name,
+            currentUserId: user.uid,
           })
         })
       }
@@ -38,7 +42,7 @@ export class App extends Component {
         db.collection('tasks for user '+ user.uid)
           .onSnapshot(snapshot=>{
           let changes = snapshot.docChanges();
-          console.log(changes);
+         // console.log(changes);
           changes.forEach(change=>{
             if(change.type==='added'){
               taskList.push({
@@ -56,7 +60,7 @@ export class App extends Component {
               }
             }
             if(change.type==='modified'){
-              console.log(change.type);
+              // console.log(change.type);
               for(let i=0; i<taskList.length;i++){
                 console.log(change.doc.data().TaskCompleted);
                 if(change.doc.id===taskList[i].id && change.doc.data().TaskCompleted===true){
@@ -67,7 +71,7 @@ export class App extends Component {
             }
             if(change.doc.data().TaskCompleted===true){
               for(let i=0; i<taskList.length;i++){
-                console.log(change.doc.data().TaskCompleted);
+                // console.log(change.doc.data().TaskCompleted);
                 if(change.doc.id===taskList[i].id 
                   && change.doc.data().TaskCompleted===true 
                   && change.doc.id){
@@ -76,8 +80,9 @@ export class App extends Component {
                 }
               }
             }
+            const sortedTaskList = taskList.sort((taskA,taskB)=>taskA.TaskNumber-taskB.TaskNumber);
             this.setState({
-              tasks: taskList,
+              tasks: sortedTaskList,
               completedTasks: completedTaskList,
             })
           })
@@ -92,14 +97,16 @@ export class App extends Component {
 
 
   render() {
-    console.log(this.state.completedTasks)
+    // console.log(this.state.completedTasks)
     // console.log(this.state.tasks);
+    // console.log(this.state.currentUserId);
     return (
       <Router>
         <Switch>
           <Route exact path='/'>
           <Home
             currentUser={this.state.currentUser}
+            currentUserId={this.state.currentUserId}
             tasks={this.state.tasks}
             completedTasks={this.state.completedTasks}/>
           </Route>
